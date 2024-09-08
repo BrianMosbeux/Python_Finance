@@ -36,3 +36,22 @@ def get_sp500_data_from_yahoo(reload_sp500=False):
 		else:
 			print('Already have {}'.format(ticker))
 
+def compile_adjusted_close_data():
+	with open('sp500tickers.pickle', 'rb') as f:
+		tickers = pickle.load(f)
+	main_df = pd.DataFrame()
+	for count, ticker in enumerate(tickers):
+		df = pd.read_csv('stock_dfs/{}.csv'.format(ticker))
+		df.set_index('Date', inplace=True)
+		df.rename(columns={'Adj Close': ticker}, inplace=True)
+		df.drop(labels=['Open', 'High', 'Low', 'Close', 'Volume'], axis=1, inplace=True)
+		if main_df.empty:
+			main_df = df
+		else:
+			main_df = main_df.join(other=df, on='Date', how='outer')
+		if count % 10 == 0:
+			print(count)
+	print(main_df)
+	main_df.to_csv('sp500_joined_adjusted_closes.csv')
+
+compile_adjusted_close_data()
