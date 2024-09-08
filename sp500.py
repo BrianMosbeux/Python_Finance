@@ -8,7 +8,7 @@ import yfinance as yf
 
 def save_sp500_tickers():
 	resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
-	soup = bs.BeautifulSoup(resp.text)
+	soup = bs.BeautifulSoup(resp.text, 'lxml')
 	table = soup.find('table', class_='wikitable sortable')
 	tickers = []
 	for row in table.findAll('tr')[1:]:
@@ -53,5 +53,3 @@ def compile_adjusted_close_data():
 			print(count)
 	print(main_df)
 	main_df.to_csv('sp500_joined_adjusted_closes.csv')
-
-compile_adjusted_close_data()
