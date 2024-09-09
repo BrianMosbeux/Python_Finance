@@ -10,14 +10,6 @@ import yfinance as yf
 
 #style.use('ggplot')
 
-start = dt.datetime(2000, 1, 1)
-end = dt.datetime.today()
-tickers = ['GOOG', 'TSLA']
-
-def download_stocks_as_csv_files(stocks_tickers, start=dt.datetime(2000, 1, 1), end=dt.datetime.today()):
-	for ticker in stocks_tickers:
-		df = yf.download(ticker, start, end)
-		df.to_csv(f'csv_stock_data/{ticker}.csv')
 
 def plot_historic_price_data_with_pandas_and_mpl(df):
 	df['50ma'] = df['Adj Close'].rolling(window=50).mean()
