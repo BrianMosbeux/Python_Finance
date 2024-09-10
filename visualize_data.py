@@ -1,14 +1,3 @@
-import datetime as dt 
-import matplotlib.pyplot as plt 
-import matplotlib.patches as mpatches
-from matplotlib import style 
-import mplfinance as mpf
-import pandas as pd 
-#from pandas_datareader import data as web
-import yfinance as yf
-
-
-#style.use('ggplot')
 
 
 def plot_historic_price_data_with_pandas_and_mpl(df):
@@ -63,10 +52,49 @@ def plot_historic_price_data_with_mplfinance(df, mavs=[], ewmavs=[], volume=True
 	mpf.plot(df, type='candle', volume=True, volume_panel=2, style='charles', addplot=add_plot_list)
 
 
-#df = pd.read_csv('csv_stock_data/GOOG.csv', parse_dates=True, index_col=0)
-#df = df.loc['2024-06-01':end,:]
+def visualize_correlation_data_mpl():
+	#create correlation table
+	df = pd.read_csv('sp500_joined_adjusted_closes.csv')
+	df.set_index('Date', inplace=True)
+	df_corr = df.corr()
+	print(df_corr.head())
+	#create color map for correlation matrix
+	data = df_corr.values
+	fig = plt.figure()
+	ax = fig.add_subplot(1,1,1)
+	heatmap = ax.pcolor(data, cmap=plt.cm.RdYlGn)
+	fig.colorbar(heatmap)
+	ax.set_xticks(np.arange(data.shape[0]) + 0.5, minor=False)
+	ax.set_xticks(np.arange(data.shape[1]) + 0.5, minor=False)
+	ax.invert_yaxis()
+	ax.xaxis.tick_top()
+	column_labels = df_corr.columns
+	row_labels = df_corr.index
+	ax.set_xticklabels(column_labels)
+	ax.set_yticklabels(row_labels)
+	plt.xticks(rotation=90)
+	heatmap.set_clim(-1, 1)
+	plt.tight_layout()
+	plt.show()
 
-#plot_historic_price_data_with_pandas_and_mpl(df)
-#plot_historic_price_data_with_mpl(df)
-#plot_historic_price_data_with_mplfinance(df, ewmavs=[50, 200])
-
+def visualize_correlation_data_mpl_colormap():
+	#based on https://matplotlib.org/stable/users/explain/colors/colormap-manipulation.html#sphx-glr-users-explain-colors-colormap-manipulation-py
+	#create correlation table
+	df = pd.read_csv('sp500_joined_adjusted_closes.csv')
+	df.set_index('Date', inplace=True)
+	df_corr = df.corr()
+	#print(df_corr.head())
+	print(df_corr['ACN'])
+	#create color map for correlation matrix
+	data = df_corr.values
+	viridis = mpl.colormaps['RdYlGn']
+	n = len([viridis])
+	fig, axs = plt.subplots(1, n, figsize=(n * 2 + 2, 3), layout='constrained', squeeze=False)
+	for [ax, cmap] in zip(axs.flat, [viridis]):
+		psm = ax.pcolormesh(data, cmap=cmap, rasterized=True, vmin=-1, vmax=1)
+		fig.colorbar(psm, ax=ax)
+	column_labels = df_corr.columns
+	row_labels = df_corr.index
+	ax.set_xticklabels(column_labels)
+	ax.set_yticklabels(row_labels)
+	plt.show()
