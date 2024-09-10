@@ -1,4 +1,8 @@
-
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import mplfinance as mpf
+import numpy as np
+import pandas as pd
 
 def plot_historic_price_data_with_pandas_and_mpl(df):
 	df['50ma'] = df['Adj Close'].rolling(window=50).mean()
