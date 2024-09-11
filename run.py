@@ -2,6 +2,10 @@
 from collections import Counter
 import numpy as np
 import pandas as pd
+from sklearn import neighbors, svm
+from sklearn.ensemble import VotingClassifier, RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
 
 def process_data_for_labels(ticker):
 	how_many_days = 7
@@ -39,3 +43,16 @@ def extract_featuresets(ticker):
 	X = df_vals.values 
 	y = vals
 	return X, y, df
+
+def do_machine_learning(ticker):
+	X, y, df = extract_featuresets(ticker)
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+	#clasifier = neighbors.KNeighborsClassifier()
+	clasifier = VotingClassifier([('linearsvc', svm.LinearSVC()), ('knn', neighbors.KNeighborsClassifier()), ('rfor', RandomForestClassifier())])
+	clasifier.fit(X_train, y_train)
+	confidence = clasifier.score(X_test, y_test)
+	print('Accuracy:', confidence)
+	prediction = clasifier.predict(X_test)
+	print('Predicted spread:', Counter(prediction))
+	return confidence
+
