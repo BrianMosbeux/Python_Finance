@@ -47,12 +47,12 @@ def extract_featuresets(ticker):
 def do_machine_learning(ticker):
 	X, y, df = extract_featuresets(ticker)
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
-	#clasifier = neighbors.KNeighborsClassifier()
-	clasifier = VotingClassifier([('linearsvc', svm.LinearSVC()), ('knn', neighbors.KNeighborsClassifier()), ('rfor', RandomForestClassifier())])
-	clasifier.fit(X_train, y_train)
-	confidence = clasifier.score(X_test, y_test)
+	#classifier = neighbors.KNeighborsClassifier()
+	classifier = VotingClassifier([('linearsvc', svm.LinearSVC()), ('knn', neighbors.KNeighborsClassifier()), ('rfor', RandomForestClassifier())])
+	classifier.fit(X_train, y_train)
+	confidence = classifier.score(X_test, y_test)
 	print('Accuracy:', confidence)
-	prediction = clasifier.predict(X_test)
+	prediction = classifier.predict(X_test)
 	print('Predicted spread:', Counter(prediction))
 	return confidence
 
