@@ -59,3 +59,6 @@ def compile_adjusted_close_data(input_folder):
 			print(count)
 	print(main_df)
 	main_df.to_csv('sp500_joined_adjusted_closes.csv')
+
+
+get_sp500_data_from_yahoo()
